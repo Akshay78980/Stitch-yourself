@@ -1,0 +1,21 @@
+*.pyc
+*.pyo
+
+__pycache__/
+
+
+senv/
+*.env
+
+.env
+
+
+.vscode/
+.idea/
+
+*.zip
+*.rar
+*.exe
+*.iso
+
+# media/
