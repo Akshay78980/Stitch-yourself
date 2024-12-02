@@ -4,7 +4,10 @@
 {% block title %}Products{% endblock %}
 
 {% block content %}
-
+    <div id="searchDiv">
+        <input type="text" id="search-input" name='q' placeholder="Search products...">
+    </div>
+    <div id="productsDiv"></div>
     <script src="{% static 'js\product_variant_list.js' %}"></script>
 {% endblock %}
 

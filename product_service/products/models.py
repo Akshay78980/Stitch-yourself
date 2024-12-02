@@ -1,6 +1,7 @@
 from django.db import models
 import uuid
 
+
 # Create your models here.
 
 class Category(models.Model):
@@ -20,12 +21,17 @@ class Product(models.Model):
     product_id = models.UUIDField(primary_key=True,default=uuid.uuid4, editable=False)
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
     group_sku_number = models.CharField(max_length = 20, unique=True)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, db_index=True)
     description = models.TextField(blank=True, null=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self) -> str:
         return f'{self.name} ({self.group_sku_number})'
+    
+    class Meta:
+        indexes = [
+            models.Index(fields=['name'])
+        ]
     
 
 
@@ -38,10 +44,10 @@ class ProductVariant(models.Model):
     ]
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     description = models.TextField(blank=True, null=True)
-    color = models.CharField(max_length=50, null=True, blank=True)
-    size = models.CharField(max_length=20, choices=SIZES, null=True, blank=True)
+    color = models.CharField(max_length=50, null=True, blank=True, db_index=True)
+    size = models.CharField(max_length=20, choices=SIZES, null=True, blank=True, db_index=True)
     quantity = models.PositiveIntegerField()
-    variant_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    variant_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, db_index=True)
     image1 = models.ImageField(upload_to='product_images/')
     image2 = models.ImageField(upload_to='product_images/', null=True, blank=True)
     image3 = models.ImageField(upload_to='product_images/', null=True, blank=True)
@@ -50,6 +56,9 @@ class ProductVariant(models.Model):
 
     class Meta:
         unique_together = ['product','color','size']
+        indexes = [
+            models.Index(fields=['color'])
+        ]
 
     def __str__(self):
         return f'{self.product.__str__()} - {self.color}'

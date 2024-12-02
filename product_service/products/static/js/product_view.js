@@ -28,20 +28,22 @@ async function getProductDetails(productVariantId){
             document.getElementById("productDescription").textContent = product.description || product.product.description;
             if (!product.quantity){
                 stockAvailableDiv.innerHTML = `Currently out of stock`
-                stockAvailableDiv.classList.replace("text-success", 'text-danger')
+                stockAvailableDiv.classList.add("text-muted")
                 stockAvailableDiv.style.fontWeight = "normal"
             }
-            else if (product.quantity<=7){
+            else if (product.quantity<=5){
                 stockAvailableDiv.innerHTML = `Only ${product.quantity} left in stock`
-                if(product.quantity<5)
-                    stockAvailableDiv.classList.replace("text-success", 'text-warning')
-                else if(product.quantity<=3)
-                    stockAvailableDiv.classList.replace("text-success", 'text-danger')
+                stockAvailableDiv.classList.add('text-danger')
+                
             }
-            const sizes = await getSizesAvailable(product.product.group_sku_number, product.color)
-            if(sizes){
-                sizes.forEach(size => {
-                    sizesDiv.innerHTML += `<button id='btn-${size}' onclick="changeSize(event)" class="btn btn-outline-primary m-2">${size}</button>`
+            const sizes_data = await getSizesAvailable(product.product.group_sku_number, product.color)
+            console.log("...sizes_data.....",sizes_data)
+            if(sizes_data){
+                console.log("...buttoning..")
+                sizes_data.forEach(data => {
+                    console.log(data,"...data")
+                    console.log(data.size,"...data")
+                    sizesDiv.innerHTML += `<button id='btn-${data.size}' data-product-variant-id='${data.id}' onclick="changeSize(event)" class="btn btn-outline-primary m-2">${data.size}</button>`
                 })
                 document.getElementById(`btn-${product.size}`).classList.add('btn-primary', 'text-light');
             }
@@ -58,6 +60,7 @@ async function getProductDetails(productVariantId){
 }
 
 async function changeSize(event){
+    console.log("..size cahnging..")
     const currentSizeBtn = document.getElementById('sizesAvailable').querySelector('.btn-primary.text-light')
     const clickedSizeBtn = event.target; 
     if(currentSizeBtn){
@@ -65,11 +68,12 @@ async function changeSize(event){
     }
     clickedSizeBtn.classList.add('btn-primary', 'text-light');
     const targetSize = clickedSizeBtn.innerText;
-    const response = await fetch(`/api/product`, {
-        method: 'POST', // Adjust to the appropriate HTTP verb
-        headers: { 'Content-Type': 'application/json' }, // Adjust if sending data
-        body: JSON.stringify({ selectedSize: targetSize }) // Optional: Include size in request body
-      });
+    const target_product_variant_id = clickedSizeBtn.getAttribute('data-product-variant-id')
+    console.log(target_product_variant_id,"...target_product_variant_id...")
+    const productvariantDetails = getProductDetails(target_product_variant_id)
+    if(productvariantDetails)
+        window.location.href = `/product/${target_product_variant_id}/`
+    
 }
 
 
@@ -80,7 +84,8 @@ async function getSizesAvailable(groupSkuNumber, productColor) {
         const response = await fetch(`/api/product-sizes/${groupSkuNumber}/${productColor}/`);
         if (response.ok) {
             const data = await response.json();
-            return data.sizes;
+            console.log(data,"....datataii..")
+            return data;
         } else {
             console.error("Failed to fetch available sizes");
             return [];

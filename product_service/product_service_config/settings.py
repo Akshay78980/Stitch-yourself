@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'products',
     "rest_framework",
-    'bootstrap5'
+    'bootstrap5',
+    'django_filters'
 ]
 
 MIDDLEWARE = [
@@ -140,3 +141,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,"media")
 
+REST_FRAMEWORK = {
+    
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ),
+}

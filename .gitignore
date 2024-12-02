@@ -18,4 +18,5 @@ senv/
 *.exe
 *.iso
 
-# media/
+media/
+product_service/media/
