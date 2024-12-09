@@ -60,6 +60,10 @@ class Product(models.Model):
             models.Index(fields=['name'])
         ]
     
+    def clean(self):
+        if self.price:
+            if self.price < 0:
+                raise ValidationError("Product price cannot be less than zero.")
 
 
 class ProductVariant(models.Model):
@@ -69,6 +73,8 @@ class ProductVariant(models.Model):
         ('M', 'M'),
         ('L', 'L'),
         ('XL', 'XL'),
+        ('XXL', 'XXL'),
+        ('XXXL', 'XXXL'),
     ]
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     description = models.TextField(blank=True, null=True)

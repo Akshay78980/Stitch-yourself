@@ -41,16 +41,6 @@ class ProductVariantViewSet(viewsets.ModelViewSet):
     pagination_class = ProductVariantPagination
     filterset_class = ProductVariantFilter
     search_fields = ['product__group_sku_number']
-
-    # def get_queryset(self):
-    #     queryset = self.queryset
-        # query = self.request.query_params.get('q')
-
-        # if query:
-        #     queryset = queryset.filter(Q(product__name__icontains=query) | Q(color=query) | Q(size=query))
-
-        # print("....queryset,,",queryset)
-        # return queryset.distinct('product','color')
     
 
 class GetAvailableSizesAPI(APIView):
